@@ -79,28 +79,28 @@ const displayMovements = function (movements) {
 };
 // displayMovements(account1.movements);
 
-const calcDisplayBalance = function (movements) {
-  const balance = movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${balance}€`;
+const calcDisplayBalance = function (account) {
+  account.balance = account.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${account.balance}€`;
 };
 // calcDisplayBalance(account1.movements);
 
 // From Lecture: The Magic of Chaining Methods
-const calcDisplaySummary = function (movements) {
-  const incomes = movements
+const calcDisplaySummary = function (account) {
+  const incomes = account.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumIn.textContent = `${incomes}€`;
 
-  const out = movements
+  const out = account.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumOut.textContent = `${Math.abs(out)}€`;
 
   // 假設每次存款都會得到 1.2% 的利息, 並且利息要超過 1 歐元才會被存入
-  const interest = movements
+  const interest = account.movements
     .filter(mov => mov > 0)
-    .map(deposit => (deposit * 1.2) / 100)
+    .map(deposit => (deposit * account.interestRate) / 100)
     .filter(int => int >= 1)
     .reduce((acc, int) => acc + int, 0);
   labelSumInterest.textContent = `${interest}€`;
@@ -118,6 +118,15 @@ const createUsernames = function (accs) {
   });
 };
 createUsernames(accounts);
+
+const updateUI = function (account) {
+  // Display movements
+  displayMovements(account.movements);
+  // Display balance
+  calcDisplayBalance(account);
+  // Display summary
+  calcDisplaySummary(account);
+};
 
 let currentAccount;
 
@@ -152,11 +161,70 @@ btnLogin.addEventListener('click', e => {
     inputLoginUsername.value = inputLoginPin.value = '';
     // Make input login elements lose focus
     inputLoginPin.blur();
-    // Display movements
-    displayMovements(currentAccount.movements);
-    // Display balance
-    calcDisplayBalance(currentAccount.movements);
-    // Display summary
-    calcDisplaySummary(currentAccount.movements);
+
+    updateUI(currentAccount);
+  }
+});
+
+// From Lecture: Implementing Transfers
+btnTransfer.addEventListener('click', e => {
+  // 因為此按鈕是表單元件中的按鈕, 所以如果沒有關閉預設行為, 那麼按下按鈕預設重新載入頁面
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const receiveAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+
+  inputTransferAmount.value = inputTransferTo.value = '';
+
+  if (
+    amount > 0 &&
+    receiveAcc &&
+    currentAccount.balance >= amount &&
+    receiveAcc?.username !== currentAccount.username
+  ) {
+    currentAccount.movements.push(-amount);
+    receiveAcc.movements.push(amount);
+    updateUI(currentAccount);
+  }
+});
+
+// From Lecture: some and every
+// 只有當任何存款記錄大於或等於申請貸款金額的 10% 時, 貸款才會成立
+btnLoan.addEventListener('click', e => {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    // Add movement
+    currentAccount.movements.push(amount);
+
+    // Update UI
+    updateUI(currentAccount);
+
+    // Clear input
+    inputLoanAmount.value = '';
+  }
+});
+
+// From Lecture: The findIndex Method
+btnClose.addEventListener('click', e => {
+  e.preventDefault();
+
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+
+    // Clear input
+    inputCloseUsername.value = inputClosePin.value = '';
+
+    // Delete account
+    accounts.splice(index, 1);
+
+    // Hide UI
+    containerApp.style.opacity = 0;
   }
 });
