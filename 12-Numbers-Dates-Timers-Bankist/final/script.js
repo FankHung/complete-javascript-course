@@ -279,7 +279,7 @@ btnLogin.addEventListener('click', function (e) {
     updateUI(currentAccount);
   }
 });
-
+document.querySelectorAll('.movements__row');
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const amount = +inputTransferAmount.value;
