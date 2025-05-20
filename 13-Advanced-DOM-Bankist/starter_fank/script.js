@@ -115,7 +115,7 @@ console.log(message.style.height);
 */
 
 // 在 JavaScript 中存取 CSS自定義屬性(CSS變量)
-document.documentElement.style.setProperty('--color-primary', 'orangered');
+// document.documentElement.style.setProperty('--color-primary', 'orangered');
 // 另外, 前面的樣式屬性也都能透過 setProperty() method 來設定
 message.style.setProperty('height', '69px');
 console.log(message.style.height);
@@ -165,3 +165,54 @@ console.log(logo.classList.contains('test-class01')); // This will show: true
 // 使用 Element.classList.add / Element.classList.remove 來增刪元素類型, 避免影響到已存在的類型
 logo.className = 'Fank_Hung';
 console.log(logo.className);
+
+/////////////////////////////////
+// Implementing Smooth Scrolling
+
+const btnScrollTo = document.querySelector('.btn--scroll-to');
+const section1 = document.querySelector('#section--1');
+
+btnScrollTo.addEventListener('click', function (e) {
+  // 1. 先取得我們想要滾動到的元素的座標
+  // letf 等義於 x, top 等義於 y
+  const s1coords = section1.getBoundingClientRect();
+  console.log(s1coords); // This will show:
+  /**
+    bottom: 2382.2999877929688
+    height: 1405.5
+    left: 0
+    right: 1114.4000244140625
+    top: 976.7999877929688
+    width: 1114.4000244140625
+    x: 0
+    y: 976.7999877929688
+   */
+
+  console.log(e.target.getBoundingClientRect());
+
+  // 取得當前滾動條的 x 與 y 座標值
+  // window.scrollY 表示當前滾動條頂端與頁面最上方的距離
+  console.log('Current scroll (X/Y): ', window.scrollX, window.scrollY);
+
+  // 取得當前可視視窗的高與寬
+  console.log(
+    'height/width viewport',
+    document.documentElement.clientHeight,
+    document.documentElement.clientWidth
+  );
+
+  //--- 傳統做法 ---
+  // Scrolling
+  // window.scrollTo(s1coords.left, s1coords.top + window.scrollY);
+
+  // Scrolling (讓滾動動畫變得漂亮與平滑), 原理就是我們改成傳入一個物件
+  // window.scrollTo({
+  //   left: s1coords.left,
+  //   top: s1coords.top + window.scrollY,
+  //   behavior: 'smooth',
+  // });
+
+  //--- 現代做法(只適用於比較新的瀏覽器版本) ---
+  // 不需要自己再去計算座標(x, y)
+  section1.scrollIntoView({ behavior: 'smooth' });
+});
