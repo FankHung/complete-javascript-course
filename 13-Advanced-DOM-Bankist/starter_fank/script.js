@@ -216,3 +216,24 @@ btnScrollTo.addEventListener('click', function (e) {
   // 不需要自己再去計算座標(x, y)
   section1.scrollIntoView({ behavior: 'smooth' });
 });
+
+//////////////////////////////////////
+// Types of Events and Event Handlers
+const h1 = document.querySelector('h1');
+
+const alertH1 = function (e) {
+  alert('addEventListener: Great! You are reading the heading :D');
+
+  // 在觸發 alert function 後移除此監聽器功能, 讓它不再觸發
+  h1.removeEventListener('mouseenter', alertH1);
+};
+
+// addEventListener() 事件監聽器做法的主要好處有二：
+// 1. 它允許我們對同一個事件添加多個事件監聽器
+// 2. 當我們不需要的時候, 可以刪除一個事件處理程序
+h1.addEventListener('mouseenter', alertH1);
+
+// 這種 event listener 作法是比較舊的做法, 現在的做法都使用 addEventListener()
+// h1.onmouseenter = function (e) {
+//   alert('addEventListener: Great! You are reading the heading :D');
+// };
