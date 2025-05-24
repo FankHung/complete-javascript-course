@@ -237,3 +237,47 @@ h1.addEventListener('mouseenter', alertH1);
 // h1.onmouseenter = function (e) {
 //   alert('addEventListener: Great! You are reading the heading :D');
 // };
+
+/////////////////////////////////
+// Event Propagation in Practice
+
+// rgb(255, 255, 255)
+const randomInt = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1) + min);
+const randomColor = () =>
+  `rgb(${randomInt(0, 255)}, ${randomInt(0, 255)}, ${randomInt(0, 255)})`;
+console.log(randomColor(0, 255));
+
+// <a class="nav__link"> --> <ul class="nav__links"> --> <nav class="nav">
+// 當點擊 Features 的時候, 其兩個父元素的背景顏色也會跟著改變, 這就是冒泡機制
+// 當點擊 <ul class="nav__links"> 的時候, Features 的背景顏色不變,
+// 但其父元素 <nav class="nav"> 會改變, 這也是冒泡機制.
+// 當點擊 Features 的時候, 上面三個元素的 e.target 都會是 <a class="nav__link">,
+// 因為 taget 總是代表事件發生的地方
+// 事件傳播是可以阻止的, 透過使用 e.stopPropagation(), 但通常情況下, 停止事件傳播通常不是一個好主意
+// 冒泡階段對於所謂的事件委託非常有用, 所以事件監聽器才默認處理事件目標與冒泡階段
+// 在 addEventListener() 中使用第三個參數, 把它設為 true (預設為 false), 代表令這個事件監聽器不再監聽冒泡階段, 而是監聽捕獲階段
+document.querySelector('.nav__link').addEventListener('click', function (e) {
+  // 在一個事件處理程序中, this 關鍵字永遠指向該事件處理程序所指向的元素
+  this.style.backgroundColor = randomColor();
+  // target 就是事件發生的地方, currentTarget 就是該事件處理程序所指向的元素, 所以 currentTarget === this
+  console.log('LINK', e.target, e.currentTarget);
+  console.log(e.currentTarget === this);
+
+  // Stop propagation
+  e.stopPropagation();
+});
+
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  this.style.backgroundColor = randomColor();
+  console.log('CONTAINER', e.target, e.currentTarget);
+});
+
+document.querySelector('.nav').addEventListener(
+  'click',
+  function (e) {
+    this.style.backgroundColor = randomColor();
+    console.log('NAV', e.target, e.currentTarget);
+  },
+  true
+);
