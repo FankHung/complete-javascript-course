@@ -257,27 +257,71 @@ console.log(randomColor(0, 255));
 // 事件傳播是可以阻止的, 透過使用 e.stopPropagation(), 但通常情況下, 停止事件傳播通常不是一個好主意
 // 冒泡階段對於所謂的事件委託非常有用, 所以事件監聽器才默認處理事件目標與冒泡階段
 // 在 addEventListener() 中使用第三個參數, 把它設為 true (預設為 false), 代表令這個事件監聽器不再監聽冒泡階段, 而是監聽捕獲階段
-document.querySelector('.nav__link').addEventListener('click', function (e) {
-  // 在一個事件處理程序中, this 關鍵字永遠指向該事件處理程序所指向的元素
-  this.style.backgroundColor = randomColor();
-  // target 就是事件發生的地方, currentTarget 就是該事件處理程序所指向的元素, 所以 currentTarget === this
-  console.log('LINK', e.target, e.currentTarget);
-  console.log(e.currentTarget === this);
+// document.querySelector('.nav__link').addEventListener('click', function (e) {
+//   // 在一個事件處理程序中, this 關鍵字永遠指向該事件處理程序所指向的元素
+//   this.style.backgroundColor = randomColor();
+//   // target 就是事件發生的地方, currentTarget 就是該事件處理程序所指向的元素, 所以 currentTarget === this
+//   console.log('LINK', e.target, e.currentTarget);
+//   console.log(e.currentTarget === this);
 
-  // Stop propagation
-  e.stopPropagation();
-});
+//   // Stop propagation
+//   e.stopPropagation();
+// });
 
+// document.querySelector('.nav__links').addEventListener('click', function (e) {
+//   this.style.backgroundColor = randomColor();
+//   console.log('CONTAINER', e.target, e.currentTarget);
+// });
+
+// document.querySelector('.nav').addEventListener(
+//   'click',
+//   function (e) {
+//     this.style.backgroundColor = randomColor();
+//     console.log('NAV', e.target, e.currentTarget);
+//   },
+//   true
+// );
+
+//////////////////////////////////////////////////
+// Event Delegation: Implementing Page Navigation
+
+// Page Navigation
+// 先在不使用事件委託的情況下實現這個功能, 以便我們可以看到這個方法中的問題
+// document.querySelectorAll('.nav__link').forEach(function (el) {
+//   el.addEventListener('click', function (e) {
+//     // 因為 .nav__link 指向的元素為一個 anker, 並且他有設定 href 屬性,
+//     // 所以點擊該元素的默認行為就會導航到對應的 section,
+//     // 因此我們要實作自己的平滑導航, 就必須要先停掉預設行為
+//     e.preventDefault();
+//     const id = this.getAttribute('href');
+//     console.log(id);
+//     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+//   });
+// });
+
+// 上面的方法已經成功對三個同為 .nav__link 類型的元素實現了平滑導航的功能,
+// 但這個實作方法隱含了一個問題,
+// 也就是一個相同的事件監聽器分別在三個元素各自附加了一次, 共附加了三次, 但其實這是不必要的.
+// 現在 .nav__link 類型的元素只有三個, 那如果遇到大型專案,
+// 某個類型的元素有 1000 個甚至 10000個, 那這種方法就會對這些元素附加上 1000 個, 10000個相同的事件監聽器, 實際上就是創建了 1000個, 10000個相同函式副本, 這樣對系統/程式效能的影響就會很大.
+
+// 上面功能的更好的實作方法是使用"事件委託". 在事件委託中,
+// 我們利用事件冒泡的機制, 通過將 eventListener 放在我們感興趣的所有元素的公共父元素上來實現
+
+// Page Navigation (事件委託)
+// 事件委託法的實現基本上有兩個步驟,
+// 1. 將事件監聽器添加到我們感興趣的所有元素的公共父元素中
+// 2. 在事件監聽器中確定引發事件的元素
+// 事件委託還有一個更重要的用例,也就是在系統頁面運行時, 我們正在處理那些還沒有在頁面上的元素. 也就是頁面加載的時候
+// 一個很好的例子是, 當我們要處理那些系統/應用程式運行時才加載的動態按鈕, 不可能為這些按鈕添加事件監聽器,
+// 因為它們都還不存在. 但我們能然可以通過使用事件委託來處理在一開始不存在的元素上的事件
 document.querySelector('.nav__links').addEventListener('click', function (e) {
-  this.style.backgroundColor = randomColor();
-  console.log('CONTAINER', e.target, e.currentTarget);
-});
+  e.preventDefault();
 
-document.querySelector('.nav').addEventListener(
-  'click',
-  function (e) {
-    this.style.backgroundColor = randomColor();
-    console.log('NAV', e.target, e.currentTarget);
-  },
-  true
-);
+  // Matching Strategy (單點擊事件是我們感興趣的元素(類型)才觸發)
+  if (e.target.classList.contains('nav__link')) {
+    const id = e.target.getAttribute('href');
+    console.log(id);
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  }
+});
