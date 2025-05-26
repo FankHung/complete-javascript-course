@@ -340,17 +340,17 @@ console.log(h1.childNodes);
 // 選出 h1 的直屬子元素
 console.log(h1.children);
 // 選擇 h1 的第一個子元素並且改變它的顏色
-h1.firstElementChild.style.color = 'white';
+// h1.firstElementChild.style.color = 'white';
 // 選擇 h1 的最後一個子元素並且改變它的顏色
-h1.lastElementChild.style.color = 'orangered';
+// h1.lastElementChild.style.color = 'orangered';
 
 // 向上選擇元素 (選擇父元素)
 console.log(h1.parentNode);
 console.log(h1.parentElement);
 // 選擇離 h1 元素最接近的指定的父元素
-h1.closest('.header').style.background = 'var(--gradient-secondary)';
+// h1.closest('.header').style.background = 'var(--gradient-secondary)';
 // 選擇離 h1 元素最接近的 h1 父元素, 若沒有, 則就是自己
-h1.closest('h1').style.background = 'var(--gradient-secondary)';
+// h1.closest('h1').style.background = 'var(--gradient-secondary)';
 
 // 向側邊選擇元素 (選擇兄弟姐妹元素)
 // JavaScript 中, 只能訪問直接關係的兄弟姐妹, 基本上就是上一個與下一個
@@ -362,6 +362,32 @@ console.log(h1.nextSibling);
 // 取得 h1 的所有兄弟姐妹
 console.log(h1.parentElement.children);
 // Do something
-[...h1.parentElement.children].forEach(function (el) {
-  if (el !== h1) el.style.transform = 'scale(0.5)';
+// [...h1.parentElement.children].forEach(function (el) {
+//   if (el !== h1) el.style.transform = 'scale(0.5)';
+// });
+
+///////////////////////////////
+// Building a Tabbed Component
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+
+// 使用事件委託法來替三個標籤按鈕元素附加事件監聽器
+tabsContainer.addEventListener('click', function (e) {
+  const clicked = e.target.closest('.operations__tab');
+  console.log(clicked);
+  // Guard Clause
+  // 因為 tabsContainer 沒有 operations__tab 類型的父元素, 所以會拿到 null,
+  // 因此透過一個保護子句(guard clause) 來實現忽略不必要的元素的點擊事件, 或是沒有被點擊的元素時, 則提早結束這個函式功能.
+  if (!clicked) return;
+  // 使所有選項標籤下移(即 un-active)
+  tabs.forEach(t => t.classList.remove('operations__tab--active'));
+  // 使被點擊的選項標籤上移
+  clicked.classList.add('operations__tab--active');
+  // 在顯示被點擊的選項標籤的內容前, 先移除所有選項標籤被激活的內容
+  tabsContent.forEach(c => c.classList.remove('operations__content--active'));
+  // Activate Content Area
+  document
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add('operations__content--active');
 });
