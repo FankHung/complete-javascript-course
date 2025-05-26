@@ -219,19 +219,19 @@ btnScrollTo.addEventListener('click', function (e) {
 
 //////////////////////////////////////
 // Types of Events and Event Handlers
-const h1 = document.querySelector('h1');
+// const h1 = document.querySelector('h1');
 
-const alertH1 = function (e) {
-  alert('addEventListener: Great! You are reading the heading :D');
+// const alertH1 = function (e) {
+//   alert('addEventListener: Great! You are reading the heading :D');
 
-  // 在觸發 alert function 後移除此監聽器功能, 讓它不再觸發
-  h1.removeEventListener('mouseenter', alertH1);
-};
+//   // 在觸發 alert function 後移除此監聽器功能, 讓它不再觸發
+//   h1.removeEventListener('mouseenter', alertH1);
+// };
 
 // addEventListener() 事件監聽器做法的主要好處有二：
 // 1. 它允許我們對同一個事件添加多個事件監聽器
 // 2. 當我們不需要的時候, 可以刪除一個事件處理程序
-h1.addEventListener('mouseenter', alertH1);
+// h1.addEventListener('mouseenter', alertH1);
 
 // 這種 event listener 作法是比較舊的做法, 現在的做法都使用 addEventListener()
 // h1.onmouseenter = function (e) {
@@ -324,4 +324,44 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
     console.log(id);
     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
   }
+});
+
+//////////////////
+// DOM Traversing
+const h1 = document.querySelector('h1');
+
+// 向下選擇元素 (選擇子元素)
+// 注意:
+// 1. 若其他地方還有 highlight 類型的元素, 這邊不會去選到, 因為他們不是 h1 的子元素
+// 2. 不管 h1 的 highlight 子元素有多深都會選到
+console.log(h1.querySelectorAll('.highlight'));
+// 一次取得 h1 的所有子元素
+console.log(h1.childNodes);
+// 選出 h1 的直屬子元素
+console.log(h1.children);
+// 選擇 h1 的第一個子元素並且改變它的顏色
+h1.firstElementChild.style.color = 'white';
+// 選擇 h1 的最後一個子元素並且改變它的顏色
+h1.lastElementChild.style.color = 'orangered';
+
+// 向上選擇元素 (選擇父元素)
+console.log(h1.parentNode);
+console.log(h1.parentElement);
+// 選擇離 h1 元素最接近的指定的父元素
+h1.closest('.header').style.background = 'var(--gradient-secondary)';
+// 選擇離 h1 元素最接近的 h1 父元素, 若沒有, 則就是自己
+h1.closest('h1').style.background = 'var(--gradient-secondary)';
+
+// 向側邊選擇元素 (選擇兄弟姐妹元素)
+// JavaScript 中, 只能訪問直接關係的兄弟姐妹, 基本上就是上一個與下一個
+console.log(h1.previousElementSibling);
+console.log(h1.nextElementSibling);
+console.log(h1.previousSibling);
+console.log(h1.nextSibling);
+
+// 取得 h1 的所有兄弟姐妹
+console.log(h1.parentElement.children);
+// Do something
+[...h1.parentElement.children].forEach(function (el) {
+  if (el !== h1) el.style.transform = 'scale(0.5)';
 });
