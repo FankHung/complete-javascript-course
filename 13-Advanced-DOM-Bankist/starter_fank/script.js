@@ -419,3 +419,20 @@ const nav = document.querySelector('nav');
 // Passing "argument" into handler
 nav.addEventListener('mouseover', handleHover.bind(0.5));
 nav.addEventListener('mouseout', handleHover.bind(1));
+
+//////////////////////////////////////////////////////
+// Implementing a Sticky Navigation: The Scroll Event
+
+// Sticky navigation
+// 先從 scroll event 方法來實作, 後面再使用一個更好的方法
+// Scroll event 是發生在 window 物件上
+// 若添加了 scroll event, 代表我們每一次的滾動都會觸發這個滾動事件監聽器
+const initialCoords = section1.getBoundingClientRect();
+
+window.addEventListener('scroll', function (e) {
+  console.log(this.window.scrollY);
+
+  if (this.window.scrollY >= initialCoords.top) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+});
+// 上面使用 scroll event 的做法雖然可行, 但是對系統效能不太好, 因為事件會在滑鼠滾輪的滾動不斷地觸發
