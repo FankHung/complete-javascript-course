@@ -427,12 +427,55 @@ nav.addEventListener('mouseout', handleHover.bind(1));
 // 先從 scroll event 方法來實作, 後面再使用一個更好的方法
 // Scroll event 是發生在 window 物件上
 // 若添加了 scroll event, 代表我們每一次的滾動都會觸發這個滾動事件監聽器
-const initialCoords = section1.getBoundingClientRect();
+// const initialCoords = section1.getBoundingClientRect();
 
-window.addEventListener('scroll', function (e) {
-  console.log(this.window.scrollY);
+// window.addEventListener('scroll', function (e) {
+//   console.log(this.window.scrollY);
 
-  if (this.window.scrollY >= initialCoords.top) nav.classList.add('sticky');
-  else nav.classList.remove('sticky');
-});
+//   if (this.window.scrollY >= initialCoords.top) nav.classList.add('sticky');
+//   else nav.classList.remove('sticky');
+// });
 // 上面使用 scroll event 的做法雖然可行, 但是對系統效能不太好, 因為事件會在滑鼠滾輪的滾動不斷地觸發
+
+///////////////////////////////////////////////
+// A Better Way: The Intersection Observer API
+// const initialCoords = section1.getBoundingClientRect();
+
+// Sticky navigation: Intersection Observer API
+// const obsCallback = function (entries, observer) {
+//   entries.forEach(entry => {
+//     console.log(entry);
+//   });
+// };
+// const obsOptions = {
+//   // root 屬性在定義 observer 的角色是誰(哪個元素), 若沒定義 or null, 則預設為 viewport
+//   root: null,
+//   threshold: [0, 0.2], // 定義交集百分比, 可以定義多個, 使用陣列儲存
+// };
+
+// const observer = new IntersectionObserver(obsCallback, obsOptions);
+// obsOptions 定義了觀察者與觀察者對被觀察對象的交集百分比.
+// observe 方法的 input: section1 定義觀察者要觀察的目標, 也就是被觀察者.
+// 這個範例定義了, 觀察者 = viewport, 觀察目標(被觀察者) = section1
+// 而 threshold = [0, 0.2] 代表, 當 section1 在 viewport 的可視範圍為 0 與 20% 時, 需要產生互動,
+// 也就是 obsCallback function 會被呼叫.
+// observer.observe(section1);
+
+// 在 Intersection Observer API 方法中, 我們要在什麼時機點讓導航欄具有粘性 ？
+// 其實就是 header 元素在 viewport 變成不可見的時候. 所以這次的觀察對象是 header
+const navHeight = nav.getBoundingClientRect().height;
+
+const stickyNav = function (entries, _) {
+  const [entry] = entries; // entries === entries[0]
+  console.log(entry);
+  if (!entry.isIntersecting) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+};
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  // rootMargin: '-90px', // 重新定義被觀察者在 viewport 的底部邊界, 90px 是 nav 元素的高
+  rootMargin: `-${navHeight}px`,
+});
+headerObserver.observe(header);
