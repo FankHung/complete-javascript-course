@@ -467,7 +467,7 @@ const navHeight = nav.getBoundingClientRect().height;
 
 const stickyNav = function (entries, _) {
   const [entry] = entries; // entries === entries[0]
-  console.log(entry);
+  // console.log(entry);
   if (!entry.isIntersecting) nav.classList.add('sticky');
   else nav.classList.remove('sticky');
 };
@@ -505,7 +505,7 @@ headerObserver.observe(header);
 ///////////////////////////////////////
 // Fixing a Small Scrolling Bug in "Reveal sections"
 const revealSection = function (entries, observer) {
-  console.log(entries);
+  // console.log(entries);
   entries.forEach(entry => {
     if (!entry.isIntersecting) return;
     entry.target.classList.remove('section--hidden');
@@ -522,3 +522,33 @@ allSections.forEach(function (section) {
   sectionObserver.observe(section);
   section.classList.add('section--hidden');
 });
+
+///////////////////////////////////////
+// Lazy loading images
+// img[data-src] 為 CSS 語法, 代表選擇 img 元素中具有 data-src 屬性的那個
+const imgTargets = document.querySelectorAll('img[data-src]');
+
+const loadImg = function (entries, observer) {
+  const [entry] = entries;
+  console.log(entry);
+
+  if (!entry.isIntersecting) return;
+
+  // Replace src with data-src
+  entry.target.src = entry.target.dataset.src;
+
+  // 在替換 img 元素的 src 值後, 會觸發 html 的 加載事件
+  // 並且刪除 lazy-img 類別要在圖像加載後才做, 否則如果網速較慢, 還是會先看到模糊的圖片.
+  entry.target.addEventListener('load', function () {
+    entry.target.classList.remove('lazy-img');
+  });
+
+  observer.unobserve(entry.target);
+};
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+});
+
+imgTargets.forEach(img => imgObserver.observe(img));
