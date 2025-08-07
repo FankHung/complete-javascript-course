@@ -630,3 +630,19 @@ dotContainer.addEventListener('click', function (e) {
     activateDot(curSlide);
   }
 });
+
+///////////////////////////////////////
+//Lifecycle DOM Events
+document.addEventListener('DOMContentLoaded', function (e) {
+  console.log('HTML parsed and DOM tree built!', e);
+});
+
+window.addEventListener('load', function (e) {
+  console.log('Page fully loaded', e);
+});
+
+window.addEventListener('beforeunload', function (e) {
+  e.preventDefault(); // 使用 preventDefault() 來觸發是否離開此頁面對話筐
+  console.log(e);
+  e.returnValue = ''; // Chrome 需要再另這個屬性值為空值才能觸發是否離開此頁面對話筐
+});
