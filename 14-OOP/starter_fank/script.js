@@ -16,5 +16,31 @@ const Person = function (firstName, birthYear) {
 };
 
 const fank = new Person('Fank', 1989);
+const matilda = new Person('Matilda', 2017);
+const jack = new Person('Jack', 1978);
+
 console.log(fank);
 console.log(fank instanceof Person); // true
+
+//////////////////////////////////////////////
+// Prototypes
+console.log(Person.prototype); // {constructor: ƒ}
+
+Person.prototype.calcAge = function () {
+  console.log(2025 - this.birthYear);
+};
+
+fank.calcAge(); // 36
+matilda.calcAge(); // 8
+
+console.log(fank.__proto__); // {constructor: ƒ, calcAge: ƒ}
+console.log(fank.__proto__ === Person.prototype); // true
+console.log(Person.prototype.isPrototypeOf(fank)); // true
+console.log(Person.prototype.isPrototypeOf(matilda)); // true
+console.log(Person.prototype.isPrototypeOf(Person)); // false
+
+Person.prototype.species = 'Homo Sapiens';
+console.log(fank.species, matilda.species);
+
+console.log(fank.hasOwnProperty('firstName')); // true
+console.log(fank.hasOwnProperty('species')); // false
