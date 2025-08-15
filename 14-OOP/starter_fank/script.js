@@ -145,6 +145,52 @@ GOOD LUCK 😀
 
 ///////////////////////////////////////
 // Setters and Getters
+// class PersonCl {
+//   constructor(fullName, birthYear) {
+//     this.fullName = fullName;
+//     this.birthYear = birthYear;
+//   }
+
+//   // Methods will be added to .prototype property
+//   // 在 class 這個 JS 特殊類型裡面創建的方法, 就直接是類別方法, 也就是 JS 的原型方法
+//   // 若要在外部添加類別方法, 就必須對類別的原型屬性添加原型方法
+//   calcAge() {
+//     console.log(2025 - this.birthYear);
+//   }
+
+//   get age() {
+//     return 2025 - this.birthYear;
+//   }
+
+//   set fullName(name) {
+//     // 在 JS 使用 setter 時, 當 setter 要設定的屬性名稱已經存在時, 我們會按照一個不成文的規定,
+//     // 也就是 programmer 通常的習慣, 會在衝突的名稱的最前面加一個底線來作為新的辨識名稱.
+//     if (name.includes(' ')) this._fullName = name;
+//     else alert(`${name} is not a full name!`);
+//   }
+
+//   get fullName() {
+//     return this._fullName;
+//   }
+// }
+
+// const jessica = new PersonCl('Jessica Davis', 1996);
+// console.log(jessica);
+// jessica.calcAge(); // 29
+// console.log(jessica.age); // 29
+// console.log(jessica.__proto__ === PersonCl.prototype); // true
+
+// PersonCl.prototype.greet = function () {
+//   console.log(`Hey ${this.fullName}`);
+// };
+// jessica.greet(); // Hey Jessica
+
+// const walter = new PersonCl('Walter White', 1965);
+// console.log(walter);
+// walter.greet(); // Hey Walter White
+
+//////////////////////////////////////////////
+// Static Methods
 class PersonCl {
   constructor(fullName, birthYear) {
     this.fullName = fullName;
@@ -172,6 +218,11 @@ class PersonCl {
   get fullName() {
     return this._fullName;
   }
+
+  // Static method
+  static hey() {
+    console.log('Hey there! 👋');
+  }
 }
 
 const jessica = new PersonCl('Jessica Davis', 1996);
@@ -186,5 +237,6 @@ PersonCl.prototype.greet = function () {
 jessica.greet(); // Hey Jessica
 
 const walter = new PersonCl('Walter White', 1965);
+PersonCl.hey(); // Hey there! 👋
 console.log(walter);
 walter.greet(); // Hey Walter White
