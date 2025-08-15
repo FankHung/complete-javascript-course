@@ -107,3 +107,38 @@ mercedes.accelerate(); // Mercedes is going at 105 km/h
 mercedes.accelerate(); // Mercedes is going at 115 km/h
 bmw.brake(); // BMW is going at 135 km/h
 mercedes.brake(); // Mercedes is going at 110 km/h
+
+///////////////////////////////////////
+// ES6 Classes
+
+// class expression
+// const PersonCl = class {};
+
+// class declaration
+class PersonCl {
+  constructor(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  }
+
+  // Methods will be added to .prototype property
+  // 在 class 這個 JS 特殊類型裡面創建的方法, 就直接是類別方法, 也就是 JS 的原型方法
+  // 若要在外部添加類別方法, 就必須對類別的原型屬性添加原型方法
+  calcAge() {
+    console.log(2025 - this.birthYear);
+  }
+}
+
+const jessica = new PersonCl('Jessica', 1996);
+console.log(jessica);
+jessica.calcAge(); // 29
+console.log(jessica.__proto__ === PersonCl.prototype); // true
+
+PersonCl.prototype.greet = function () {
+  console.log(`Hey ${this.firstName}`);
+};
+jessica.greet(); // Hey Jessica
+
+// 1. Classes are NOT hoisted
+// 2. Classes are first-class citizens
+// 3. Classes are executed in strict mode
