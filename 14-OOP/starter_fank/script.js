@@ -83,30 +83,30 @@ DATA CAR 2: 'Mercedes' going at 95 km/h
 GOOD LUCK 😀
 */
 
-const Car = function (make, speed) {
-  this.make = make;
-  this.speed = speed;
-};
+// const Car = function (make, speed) {
+//   this.make = make;
+//   this.speed = speed;
+// };
 
-Car.prototype.accelerate = function () {
-  this.speed += 10;
-  console.log(`${this.make} is going at ${this.speed} km/h`);
-};
+// Car.prototype.accelerate = function () {
+//   this.speed += 10;
+//   console.log(`${this.make} is going at ${this.speed} km/h`);
+// };
 
-Car.prototype.accelerate = function () {
-  this.speed -= 5;
-  console.log(`${this.make} is going at ${this.speed} km/h`);
-};
+// Car.prototype.accelerate = function () {
+//   this.speed -= 5;
+//   console.log(`${this.make} is going at ${this.speed} km/h`);
+// };
 
-const bmw = new Car('BMW', 120);
-const mercedes = new Car('Mercedes', 95);
+// const bmw = new Car('BMW', 120);
+// const mercedes = new Car('Mercedes', 95);
 
-bmw.accelerate(); // BMW is going at 130 km/h
-bmw.accelerate(); // BMW is going at 140 km/h
-mercedes.accelerate(); // Mercedes is going at 105 km/h
-mercedes.accelerate(); // Mercedes is going at 115 km/h
-bmw.brake(); // BMW is going at 135 km/h
-mercedes.brake(); // Mercedes is going at 110 km/h
+// bmw.accelerate(); // BMW is going at 130 km/h
+// bmw.accelerate(); // BMW is going at 140 km/h
+// mercedes.accelerate(); // Mercedes is going at 105 km/h
+// mercedes.accelerate(); // Mercedes is going at 115 km/h
+// bmw.brake(); // BMW is going at 135 km/h
+// mercedes.brake(); // Mercedes is going at 110 km/h
 
 ///////////////////////////////////////
 // ES6 Classes
@@ -115,9 +115,39 @@ mercedes.brake(); // Mercedes is going at 110 km/h
 // const PersonCl = class {};
 
 // class declaration
+// class PersonCl {
+//   constructor(firstName, birthYear) {
+//     this.firstName = firstName;
+//     this.birthYear = birthYear;
+//   }
+
+//   // Methods will be added to .prototype property
+//   // 在 class 這個 JS 特殊類型裡面創建的方法, 就直接是類別方法, 也就是 JS 的原型方法
+//   // 若要在外部添加類別方法, 就必須對類別的原型屬性添加原型方法
+//   calcAge() {
+//     console.log(2025 - this.birthYear);
+//   }
+// }
+
+// const jessica = new PersonCl('Jessica', 1996);
+// console.log(jessica);
+// jessica.calcAge(); // 29
+// console.log(jessica.__proto__ === PersonCl.prototype); // true
+
+// PersonCl.prototype.greet = function () {
+//   console.log(`Hey ${this.firstName}`);
+// };
+// jessica.greet(); // Hey Jessica
+
+// 1. Classes are NOT hoisted
+// 2. Classes are first-class citizens
+// 3. Classes are executed in strict mode
+
+///////////////////////////////////////
+// Setters and Getters
 class PersonCl {
-  constructor(firstName, birthYear) {
-    this.firstName = firstName;
+  constructor(fullName, birthYear) {
+    this.fullName = fullName;
     this.birthYear = birthYear;
   }
 
@@ -127,18 +157,34 @@ class PersonCl {
   calcAge() {
     console.log(2025 - this.birthYear);
   }
+
+  get age() {
+    return 2025 - this.birthYear;
+  }
+
+  set fullName(name) {
+    // 在 JS 使用 setter 時, 當 setter 要設定的屬性名稱已經存在時, 我們會按照一個不成文的規定,
+    // 也就是 programmer 通常的習慣, 會在衝突的名稱的最前面加一個底線來作為新的辨識名稱.
+    if (name.includes(' ')) this._fullName = name;
+    else alert(`${name} is not a full name!`);
+  }
+
+  get fullName() {
+    return this._fullName;
+  }
 }
 
-const jessica = new PersonCl('Jessica', 1996);
+const jessica = new PersonCl('Jessica Davis', 1996);
 console.log(jessica);
 jessica.calcAge(); // 29
+console.log(jessica.age); // 29
 console.log(jessica.__proto__ === PersonCl.prototype); // true
 
 PersonCl.prototype.greet = function () {
-  console.log(`Hey ${this.firstName}`);
+  console.log(`Hey ${this.fullName}`);
 };
 jessica.greet(); // Hey Jessica
 
-// 1. Classes are NOT hoisted
-// 2. Classes are first-class citizens
-// 3. Classes are executed in strict mode
+const walter = new PersonCl('Walter White', 1965);
+console.log(walter);
+walter.greet(); // Hey Walter White
