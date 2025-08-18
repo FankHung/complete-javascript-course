@@ -240,3 +240,34 @@ const walter = new PersonCl('Walter White', 1965);
 PersonCl.hey(); // Hey there! 👋
 console.log(walter);
 walter.greet(); // Hey Walter White
+
+//////////////////////////////////////////////
+// Object.create
+// PersonProto 代表人類別的原型
+const PersonProto = {
+  calcAge() {
+    console.log(2025 - this.birthYear);
+  },
+
+  // init 方法用來初始化 PersonProto 的實例屬性,
+  // 並且與 constructor 沒有任何關係.
+  init(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  },
+};
+
+// Object.create(PersonProto) 會返回一個新的物件,
+// 並且把這個物件鏈接到我們傳入的原型 PersonProto.
+// 現在, steven 會是一個鏈接到 PersonProto 的空物件.
+const steven = Object.create(PersonProto);
+console.log(steven); // {}
+steven.name = 'Steven';
+steven.birthYear = 2002;
+steven.calcAge(); // 23
+console.log(steven.__proto__ === PersonProto); // true
+
+const sarah = Object.create(PersonProto);
+sarah.init('Sarah', 1979);
+sarah.calcAge(); // 46
+console.log(sarah); // {firstName: 'Sarah', birthYear: 1979
