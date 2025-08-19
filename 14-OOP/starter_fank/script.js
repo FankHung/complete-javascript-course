@@ -271,3 +271,39 @@ const sarah = Object.create(PersonProto);
 sarah.init('Sarah', 1979);
 sarah.calcAge(); // 46
 console.log(sarah); // {firstName: 'Sarah', birthYear: 1979
+
+////////////////////////////////////////////////////////
+// Inheritance Between "Classes": Constructor Functions
+const PersonIH = function (firstName, birthYear) {
+  this.firstName = firstName;
+  this.birthYear = birthYear;
+};
+
+PersonIH.prototype.calcAge = function () {
+  console.log(2025 - this.birthYear);
+};
+
+const Student = function (firstName, birthYear, course) {
+  // 呼叫 PersonIH 的構造函式, 並且把 this 綁定到 StudentIH 的實例上
+  PersonIH.call(this, firstName, birthYear);
+  this.course = course;
+};
+
+Student.prototype = Object.create(PersonIH.prototype);
+
+Student.prototype.introduce = function () {
+  console.log(`My name is ${this.firstName} and I study ${this.course}`);
+};
+
+const mike = new Student('Mike', 2020, 'Computer Science');
+mike.introduce(); // My name is Mike and I study Computer Science
+mike.calcAge(); // 5
+console.log(mike); // {firstName: 'Mike', birthYear: 2020, course: 'Computer Science'}
+console.log(mike.__proto__); // {constructor: ƒ, introduce: ƒ, calcAge: ƒ}
+console.log(mike.__proto__.__proto__); // {constructor
+
+console.log(mike instanceof Student); // true
+console.log(mike instanceof PersonIH); // true
+console.log(mike instanceof Object); // true
+
+console.dir(mike.__proto__.constructor); // {constructor: ƒ, calcAge: ƒ}
