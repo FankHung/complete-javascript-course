@@ -307,3 +307,36 @@ console.log(mike instanceof PersonIH); // true
 console.log(mike instanceof Object); // true
 
 console.dir(mike.__proto__.constructor); // {constructor: ƒ, calcAge: ƒ}
+
+////////////////////////////////////////////////////////
+// Inheritance Between "Classes": ES6 Classes
+// 使用 extends 關鍵字來實現繼承, 背後幫我們直接完成了父類別的原型鏈接
+class StudentCl extends PersonCl {
+  constructor(fullName, birthYear, course) {
+    // 使用 super 呼叫父類別的構造函式
+    // 並且在子類別的構造函式中, 必須最優先呼叫 super() 才能使用 this 關鍵字
+    // 因為 super 函式的調用會創建 this, 而在子類別的構造函式中, this 會指向子類別的實例.
+    super(fullName, birthYear);
+    this.course = course;
+  }
+
+  // 在子類別中添加方法(原型方法)
+  introduce() {
+    console.log(`My name is ${this.fullName} and I study ${this.course}`);
+  }
+
+  calcAge() {
+    console.log(
+      `I am ${
+        2037 - this.birthYear
+      } years old, but as a student I feel more like ${
+        2037 - this.birthYear + 10
+      }`
+    );
+  }
+}
+
+const martha = new StudentCl('Martha Fank', 2012, 'Computer Science');
+martha.introduce(); // My name is Martha and I study Computer Science
+martha.calcAge(); // I am 25 years old, but as a student I feel more like 35
+console.log(martha); // {fullName: 'Martha Fank', birthYear: 2012, course: 'Computer Science'}
