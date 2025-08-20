@@ -376,3 +376,63 @@ jay.init('Jay', 2010, 'Computer Science');
 jay.introduce(); // My name is Jay and I study Computer Science
 jay.calcAge(); // 15
 console.log(jay); // {firstName: 'Jay', birthYear: 2010
+
+////////////////////////////////////////////////////////
+// Encapsulation: Private Class Fields and Methods
+// 1. Public fields
+// 2. Private fields
+// 3. Public methods
+// 4. Private methods
+// 5. STATIC version of the above (這裡先不討論, 因為比較沒那麼重要)
+class Account {
+  locale = navigator.language; // Public field
+  bank = 'Bankist'; // Public field
+  #movements = []; // 以 # 開頭來命名屬性名稱代表這是 Private field
+  #pin; // Private field, 可以先定義但是不賦值
+
+  constructor(owner, currency, pin) {
+    this.owner = owner;
+    this.currency = currency;
+    this.#pin = pin;
+    // this.movements = [];
+    /* 在構造函式中建立原型屬性, 同樣能做到 public field */
+    // this.bank = 'Bankist';
+    // this.locale = navigator.language;
+
+    console.log(`Thanks for opening an account, ${owner}`);
+  }
+
+  // Public interface (API), 直接在類別中定義方法預設就是 public methods
+  getMovements() {
+    return this.#movements;
+  }
+
+  deposit(val) {
+    this.#movements.push(val);
+  }
+
+  withdraw(val) {
+    this.deposit(-val);
+  }
+
+  // 以 # 開頭來命名方法名稱代表這是 Private method
+  #approveLoan(val) {
+    // 這裡只是定義一個偽方法(pseudo code), 直接允許通過
+    return true;
+  }
+
+  requestLoan(val) {
+    if (this.#approveLoan(val)) {
+      this.deposit(val);
+      console.log(`Loan approved`);
+    }
+  }
+}
+
+const acc1 = new Account('Jonas', 'EUR', 1111);
+
+// acc1.movements.push(250);
+// acc1.movements.push(-140);
+acc1.deposit(250);
+acc1.withdraw(140);
+acc1.requestLoan(1000);
