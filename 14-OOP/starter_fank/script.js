@@ -405,14 +405,17 @@ class Account {
   // Public interface (API), 直接在類別中定義方法預設就是 public methods
   getMovements() {
     return this.#movements;
+    // Not chainable
   }
 
   deposit(val) {
     this.#movements.push(val);
+    return this; // 為了實現方法鏈接, 返回 this
   }
 
   withdraw(val) {
     this.deposit(-val);
+    return this; // 為了實現方法鏈接, 返回 this
   }
 
   // 以 # 開頭來命名方法名稱代表這是 Private method
@@ -426,6 +429,7 @@ class Account {
       this.deposit(val);
       console.log(`Loan approved`);
     }
+    return this; // 為了實現方法鏈接, 返回 this
   }
 }
 
@@ -433,6 +437,18 @@ const acc1 = new Account('Jonas', 'EUR', 1111);
 
 // acc1.movements.push(250);
 // acc1.movements.push(-140);
-acc1.deposit(250);
-acc1.withdraw(140);
-acc1.requestLoan(1000);
+// acc1.deposit(250);
+// acc1.withdraw(140);
+// acc1.requestLoan(1000);
+
+////////////////////////////////////////////////////////
+// Chaining Methods
+const movement = acc1
+  .deposit(300)
+  .withdraw(100)
+  .withdraw(50)
+  .requestLoan(25000)
+  .withdraw(4000)
+  .getMovements();
+
+console.log(movement); // [300, -100, -50, 25000, -4000]
